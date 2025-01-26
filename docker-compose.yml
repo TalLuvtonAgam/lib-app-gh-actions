@@ -1,0 +1,57 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres
+      - MAX_ROW_NUMBER=${MAX_ROW_NUMBER}
+      - MAX_SHELF_NUMBER=${MAX_SHELF_NUMBER}
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    networks:
+      - app_network
+    volumes:
+      - ./backend:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 8000
+
+  frontend:
+    build:
+      context: ./frontend/library
+      dockerfile: Dockerfile
+    environment:
+      - REACT_APP_MAX_ROWS=${REACT_APP_MAX_ROWS}
+      - REACT_APP_MAX_SHELF=${REACT_APP_MAX_SHELF}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - app_network
+    volumes:
+      - ./frontend/library:/app
+
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge
+
+volumes:
+  db_data:
+    driver: local
