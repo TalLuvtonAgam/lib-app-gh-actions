@@ -1,7 +1,7 @@
 name: first workflow
-on: push
+on: [push, workflow_dispatch]
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Get code
@@ -13,6 +13,9 @@ jobs:
       - name: Install Node.js dependencies
         working-directory: frontend/library
         run: npm ci
+      - name: Build Node.js project
+        working-directory: frontend/library
+        run: npm run build
       - name: Install Python
         uses: actions/setup-python@v5
         with:
