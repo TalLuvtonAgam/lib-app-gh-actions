@@ -10,7 +10,7 @@ const BookActions = ({ book, setBooks }) => {
     if (newRow && newShelf) {
       setIsUpdating(true);
       try {
-        const response = await api.put(
+        await api.put(
           `/books/${book.id}/${newRow}/${newShelf}`
         );
         setBooks((books) =>
