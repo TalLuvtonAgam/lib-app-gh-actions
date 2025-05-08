@@ -11,7 +11,8 @@ jobs:
         with:
           node-version: '18'
       - name: Install Node.js dependencies
-        run: npm install
+        working-directory: frontend
+        run: npm ci
       - name: Install Python
         uses: actions/setup-python@v5
         with:
